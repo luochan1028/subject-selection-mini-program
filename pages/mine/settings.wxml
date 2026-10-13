@@ -1,0 +1,142 @@
+<!--pages/mine/settings.wxml-->
+<view class="settings-page">
+  <!-- 个人信息 -->
+  <view class="settings-section">
+    <view class="section-title">个人信息</view>
+    <view class="settings-list card">
+      <view class="setting-item" bindtap="showProvincePicker">
+        <text class="setting-label">所在省份</text>
+        <view class="setting-value">
+          <text>{{province}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+      <view class="setting-item" bindtap="showGradePicker">
+        <text class="setting-label">当前年级</text>
+        <view class="setting-value">
+          <text>{{grade}}</text>
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通知设置 -->
+  <view class="settings-section">
+    <view class="section-title">通知设置</view>
+    <view class="settings-list card">
+      <view class="setting-item">
+        <text class="setting-label">消息通知</text>
+        <switch 
+          checked="{{settings.noticeEnabled}}" 
+          data-key="noticeEnabled"
+          bindchange="toggleSetting"
+          color="#4A90D9"
+        />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">重要节点提醒</text>
+        <switch 
+          checked="{{settings.gradeReminder}}" 
+          data-key="gradeReminder"
+          bindchange="toggleSetting"
+          color="#4A90D9"
+        />
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">数据更新提醒</text>
+        <switch 
+          checked="{{settings.dataAutoUpdate}}" 
+          data-key="dataAutoUpdate"
+          bindchange="toggleSetting"
+          color="#4A90D9"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐私设置 -->
+  <view class="settings-section">
+    <view class="section-title">隐私与数据</view>
+    <view class="settings-list card">
+      <view class="setting-item" bindtap="clearCache">
+        <text class="setting-label">清除缓存</text>
+        <text class="setting-value-text">释放存储空间</text>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">隐私政策</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">用户协议</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="settings-section">
+    <view class="section-title">其他</view>
+    <view class="settings-list card">
+      <view class="setting-item" bindtap="showAbout">
+        <text class="setting-label">关于我们</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="showFeedback">
+        <text class="setting-label">意见反馈</text>
+        <text class="arrow">›</text>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">给我们评分</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="settings-section" wx:if="{{userInfo}}">
+    <button class="btn btn-outline logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 省份选择弹窗 -->
+  <view class="picker-mask" wx:if="{{showProvincePicker}}" bindtap="hideProvincePicker">
+    <view class="picker-content" catchtap="">
+      <view class="picker-header">
+        <text class="picker-title">选择省份</text>
+        <text class="picker-close" bindtap="hideProvincePicker">✕</text>
+      </view>
+      <scroll-view class="picker-body" scroll-y>
+        <view 
+          class="picker-item {{province === item ? 'selected' : ''}}"
+          wx:for="{{provinces}}"
+          wx:key="*this"
+          data-province="{{item}}"
+          bindtap="selectProvince"
+        >
+          {{item}}
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 年级选择弹窗 -->
+  <view class="picker-mask" wx:if="{{showGradePicker}}" bindtap="hideGradePicker">
+    <view class="picker-content picker-small" catchtap="">
+      <view class="picker-header">
+        <text class="picker-title">选择年级</text>
+        <text class="picker-close" bindtap="hideGradePicker">✕</text>
+      </view>
+      <view class="picker-body">
+        <view 
+          class="picker-item {{grade === item ? 'selected' : ''}}"
+          wx:for="{{grades}}"
+          wx:key="*this"
+          data-grade="{{item}}"
+          bindtap="selectGrade"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,305 @@
+<!--pages/assessment/result.wxml-->
+<view class="result-page">
+  <!-- 结果头部 -->
+  <view class="result-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <text class="result-label">你的最佳选科组合</text>
+      <text class="result-combo">{{topCombinations[0].name}}</text>
+      <view class="result-score-row">
+        <text class="score-text">匹配度</text>
+        <text class="score-value">{{topCombinations[0].matchScore}}%</text>
+      </view>
+      <text class="result-date">测评时间：{{reportDate}}</text>
+    </view>
+  </view>
+
+  <!-- 报告章节Tab -->
+  <view class="section-tabs">
+    <scroll-view scroll-x class="tabs-scroll">
+      <view class="tabs-list">
+        <view 
+          class="tab-item {{selectedTab === index ? 'active' : ''}}"
+          wx:for="{{reportSections}}"
+          wx:key="id"
+          data-index="{{index}}"
+          bindtap="switchTab"
+        >
+          {{item.name}}
+          <text wx:if="{{item.isVip && !isMember}}" class="vip-lock">🔒</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 个人特质画像 -->
+  <view class="section-content" wx:if="{{selectedTab === 0}}">
+    <view class="card radar-card">
+      <view class="card-title">🧭 六维度能力雷达图</view>
+      <view class="radar-container">
+        <canvas type="2d" id="radarCanvas" class="radar-canvas"></canvas>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">📊 各科适配度排名</view>
+      <view class="subject-rank-list">
+        <view class="rank-item" wx:for="{{subjectScores}}" wx:key="subject">
+          <view class="rank-index {{index < 3 ? 'top' : ''}}">{{index + 1}}</view>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-bar">
+            <view class="rank-fill" style="width: {{item.score}}%;"></view>
+          </view>
+          <text class="rank-score">{{item.score}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">💡 性格特点解读</view>
+      <view class="trait-desc">
+        <text>根据你的测评结果，你在逻辑思维和空间想象方面表现较为突出，适合需要理性分析和抽象思考的学科。同时，你的动手能力和记忆力也处于较好水平，这为理科学习打下了良好基础。</text>
+      </view>
+      <view class="trait-tags">
+        <text class="trait-tag">逻辑清晰</text>
+        <text class="trait-tag">善于分析</text>
+        <text class="trait-tag">动手能力强</text>
+        <text class="trait-tag">记忆力好</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最佳选科方案（会员） -->
+  <view class="section-content" wx:if="{{selectedTab === 1}}">
+    <view class="vip-section {{isMember ? '' : 'blur-mask'}}">
+      <view class="combo-detail-list">
+        <view class="combo-detail-card card" wx:for="{{topCombinations}}" wx:key="id">
+          <view class="combo-rank">TOP{{index + 1}}</view>
+          <view class="combo-header">
+            <text class="combo-name">{{item.name}}</text>
+            <view class="combo-match">
+              <text class="match-value">{{item.matchScore}}</text>
+              <text class="match-unit">%</text>
+            </view>
+          </view>
+          <view class="combo-tags">
+            <text class="tag tag-primary" wx:for="{{item.subjectScores}}" wx:key="subject" wx:for-item="subject">
+              {{subject.name}} {{subject.score}}分
+            </text>
+          </view>
+          <view class="combo-info-row">
+            <view class="info-block">
+              <text class="info-label">专业覆盖率</text>
+              <text class="info-value success">{{item.majorCoverage}}%</text>
+            </view>
+            <view class="info-block">
+              <text class="info-label">学习难度</text>
+              <text class="info-value">{{item.difficulty}}</text>
+            </view>
+            <view class="info-block">
+              <text class="info-label">竞争程度</text>
+              <text class="info-value warning">{{item.competition}}</text>
+            </view>
+          </view>
+          <view class="combo-desc">{{item.description}}</view>
+          
+          <view class="combo-pros-cons">
+            <view class="pros">
+              <text class="pros-title">✅ 优势</text>
+              <text class="pros-text">专业选择面广，未来就业方向多</text>
+            </view>
+            <view class="cons">
+              <text class="cons-title">⚠️ 注意</text>
+              <text class="cons-text">竞争较激烈，需要持续努力</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="blur-content" wx:if="{{!isMember}}">
+        <text class="blur-title">开通会员查看完整分析</text>
+        <button class="btn btn-secondary btn-small" bindtap="openMember">立即开通</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 可报专业全景（会员） -->
+  <view class="section-content" wx:if="{{selectedTab === 2}}">
+    <view class="vip-section {{isMember ? '' : 'blur-mask'}}">
+      <view class="card">
+        <view class="card-title">🎓 可报专业大类</view>
+        <view class="major-category-list">
+          <view class="major-category-item" wx:for="{{topCombinations[0].majors}}" wx:key="*this">
+            <text class="category-name">{{item}}</text>
+            <text class="category-count">约{{100 + index * 20}}个专业</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="card">
+        <view class="card-title">🏫 推荐院校</view>
+        <view class="recommend-uni-list">
+          <view class="recommend-uni-item">
+            <text class="uni-name">清华大学</text>
+            <text class="uni-major">计算机科学与技术</text>
+            <text class="uni-score">680分</text>
+          </view>
+          <view class="recommend-uni-item">
+            <text class="uni-name">北京大学</text>
+            <text class="uni-major">软件工程</text>
+            <text class="uni-score">678分</text>
+          </view>
+          <view class="recommend-uni-item">
+            <text class="uni-name">浙江大学</text>
+            <text class="uni-major">电子信息工程</text>
+            <text class="uni-score">660分</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="blur-content" wx:if="{{!isMember}}">
+        <text class="blur-title">开通会员查看完整专业列表</text>
+        <button class="btn btn-secondary btn-small" bindtap="openMember">立即开通</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 竞争力评估（会员） -->
+  <view class="section-content" wx:if="{{selectedTab === 3}}">
+    <view class="vip-section {{isMember ? '' : 'blur-mask'}}">
+      <view class="card">
+        <view class="card-title">📈 竞争力分析</view>
+        <view class="competition-chart">
+          <view class="comp-item">
+            <text class="comp-label">当前水平</text>
+            <view class="comp-bar">
+              <view class="comp-fill current" style="width: 65%;"></view>
+            </view>
+            <text class="comp-value">65%</text>
+          </view>
+          <view class="comp-item">
+            <text class="comp-label">提升潜力</text>
+            <view class="comp-bar">
+              <view class="comp-fill potential" style="width: 85%;"></view>
+            </view>
+            <text class="comp-value">85%</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">🎯 可冲击院校梯度</view>
+        <view class="tier-list">
+          <view class="tier-item">
+            <view class="tier-badge charge">冲</view>
+            <view class="tier-content">
+              <text class="tier-name">冲刺院校</text>
+              <text class="tier-desc">录取概率30%-50%，有提升空间可争取</text>
+            </view>
+          </view>
+          <view class="tier-item">
+            <view class="tier-badge steady">稳</view>
+            <view class="tier-content">
+              <text class="tier-name">稳妥院校</text>
+              <text class="tier-desc">录取概率50%-80%，匹配度最高</text>
+            </view>
+          </view>
+          <view class="tier-item">
+            <view class="tier-badge safe">保</view>
+            <view class="tier-content">
+              <text class="tier-name">保底院校</text>
+              <text class="tier-desc">录取概率80%以上，确保有学上</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="blur-content" wx:if="{{!isMember}}">
+        <text class="blur-title">开通会员查看竞争力评估</text>
+        <button class="btn btn-secondary btn-small" bindtap="openMember">立即开通</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 行动建议（会员） -->
+  <view class="section-content" wx:if="{{selectedTab === 4}}">
+    <view class="vip-section {{isMember ? '' : 'blur-mask'}}">
+      <view class="card">
+        <view class="card-title">📚 学习建议</view>
+        <view class="advice-list">
+          <view class="advice-item">
+            <view class="advice-num">1</view>
+            <view class="advice-content">
+              <text class="advice-title">夯实物理基础</text>
+              <text class="advice-desc">物理是理工科的基础，建议加强力学和电磁学的学习，多做经典题型。</text>
+            </view>
+          </view>
+          <view class="advice-item">
+            <view class="advice-num">2</view>
+            <view class="advice-content">
+              <text class="advice-title">提升化学思维</text>
+              <text class="advice-desc">建立化学知识体系，掌握元素周期律和化学反应原理。</text>
+            </view>
+          </view>
+          <view class="advice-item">
+            <view class="advice-num">3</view>
+            <view class="advice-content">
+              <text class="advice-title">保持生物优势</text>
+              <text class="advice-desc">生物需要记忆的内容较多，建议定期复习，构建知识网络。</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">⏰ 时间规划</view>
+        <view class="timeline-list">
+          <view class="timeline-item">
+            <view class="timeline-dot"></view>
+            <view class="timeline-content">
+              <text class="timeline-time">高一上学期</text>
+              <text class="timeline-event">适应高中学习，探索各科兴趣</text>
+            </view>
+          </view>
+          <view class="timeline-item">
+            <view class="timeline-dot active"></view>
+            <view class="timeline-content">
+              <text class="timeline-time">高一下学期</text>
+              <text class="timeline-event">确定选科方向，重点学习选考科目</text>
+            </view>
+          </view>
+          <view class="timeline-item">
+            <view class="timeline-dot"></view>
+            <view class="timeline-content">
+              <text class="timeline-time">高二</text>
+              <text class="timeline-event">深入学习选考科目，开始了解大学专业</text>
+            </view>
+          </view>
+          <view class="timeline-item">
+            <view class="timeline-dot"></view>
+            <view class="timeline-content">
+              <text class="timeline-time">高三</text>
+              <text class="timeline-event">全力备考，制定志愿填报方案</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="blur-content" wx:if="{{!isMember}}">
+        <text class="blur-title">开通会员查看专属行动建议</text>
+        <button class="btn btn-secondary btn-small" bindtap="openMember">立即开通</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="btn btn-outline" bindtap="retakeAssessment">重新测评</button>
+    <button class="btn btn-primary" bindtap="openMember" wx:if="{{!isMember}}">
+      开通会员看完整报告
+    </button>
+    <button class="btn btn-secondary" bindtap="viewCombination" wx:else data-id="{{topCombinations[0].id}}">
+      查看详细分析
+    </button>
+  </view>
+</view>

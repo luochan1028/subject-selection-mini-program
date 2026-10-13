@@ -1,0 +1,32 @@
+<!--pages/mine/reports.wxml-->
+<view class="reports-page container">
+  <!-- 无报告 -->
+  <view class="empty-state card" wx:if="{{records.length === 0}}">
+    <text class="empty-icon">📊</text>
+    <text class="empty-title">暂无测评报告</text>
+    <text class="empty-desc">完成测评后，你的报告将保存在这里</text>
+    <button class="btn btn-primary btn-small mt-16" bindtap="startAssessment">立即测评</button>
+  </view>
+
+  <!-- 报告列表 -->
+  <view class="report-list" wx:else>
+    <view class="list-tip">共 {{records.length}} 份测评报告</view>
+    <view 
+      class="report-card card"
+      wx:for="{{records}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="viewReport"
+    >
+      <view class="report-header">
+        <text class="report-date">{{item.date}}</text>
+        <text class="report-match">匹配度 {{item.matchScore}}%</text>
+      </view>
+      <view class="report-combo">{{item.topCombo}}</view>
+      <view class="report-footer">
+        <text class="view-detail">查看详情 ›</text>
+        <text class="delete-btn" catchtap="deleteRecord" data-id="{{item.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+</view>

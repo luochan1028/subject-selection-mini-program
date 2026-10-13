@@ -1,0 +1,125 @@
+<!--pages/assessment/assessment.wxml-->
+<view class="assessment-page">
+  <!-- 开始页 -->
+  <view class="intro-page" wx:if="{{status === 'intro'}}">
+    <view class="intro-hero">
+      <view class="hero-icon">🧠</view>
+      <view class="hero-title">智能选科测评</view>
+      <view class="hero-subtitle">科学测评，精准推荐</view>
+    </view>
+
+    <view class="intro-content card">
+      <view class="intro-section">
+        <view class="section-title">📋 测评内容</view>
+        <view class="feature-list">
+          <view class="feature-item">
+            <view class="feature-icon">🎭</view>
+            <view class="feature-text">
+              <text class="feature-name">性格特质</text>
+              <text class="feature-desc">10道题 · 分析思维模式</text>
+            </view>
+          </view>
+          <view class="feature-item">
+            <view class="feature-icon">❤️</view>
+            <view class="feature-text">
+              <text class="feature-name">学科兴趣</text>
+              <text class="feature-desc">10道题 · 发现兴趣所在</text>
+            </view>
+          </view>
+          <view class="feature-item">
+            <view class="feature-icon">💪</view>
+            <view class="feature-text">
+              <text class="feature-name">能力倾向</text>
+              <text class="feature-desc">10道题 · 评估综合能力</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="intro-section">
+        <view class="section-title">⏱ 测评须知</view>
+        <view class="notice-list">
+          <view class="notice-item">
+            <text class="notice-dot">•</text>
+            <text class="notice-text">共30道题，预计用时8-10分钟</text>
+          </view>
+          <view class="notice-item">
+            <text class="notice-dot">•</text>
+            <text class="notice-text">请根据第一直觉作答，无需过多思考</text>
+          </view>
+          <view class="notice-item">
+            <text class="notice-dot">•</text>
+            <text class="notice-text">答案没有对错，适合自己的才是最好的</text>
+          </view>
+          <view class="notice-item">
+            <text class="notice-dot">•</text>
+            <text class="notice-text">免费用户可查看TOP1推荐组合</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="intro-footer">
+      <button class="btn btn-primary btn-block" bindtap="startAssessment">
+        开始测评
+      </button>
+      <view class="history-link" bindtap="viewHistory">
+        <text>查看历史测评记录 ›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 答题页 -->
+  <view class="answering-page" wx:if="{{status === 'answering'}}">
+    <!-- 顶部进度 -->
+    <view class="progress-bar">
+      <view class="progress-info">
+        <text class="progress-text">第 {{currentIndex + 1}} / {{totalQuestions}} 题</text>
+        <text class="progress-module">{{currentQuestion.moduleName}}</text>
+      </view>
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{progress}}%"></view>
+      </view>
+    </view>
+
+    <!-- 题目区域 -->
+    <view class="question-area">
+      <view class="question-card card">
+        <view class="question-number">Q{{currentIndex + 1}}</view>
+        <view class="question-text">{{currentQuestion.question}}</view>
+      </view>
+
+      <!-- 选项列表 -->
+      <view class="options-list">
+        <view 
+          class="option-item {{selectedValue === item.value ? 'selected' : ''}}"
+          wx:for="{{currentQuestion.options}}"
+          wx:key="value"
+          data-value="{{item.value}}"
+          bindtap="selectOption"
+        >
+          <view class="option-radio">
+            <view wx:if="{{selectedValue === item.value}}" class="radio-inner"></view>
+          </view>
+          <text class="option-text">{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="answer-footer">
+      <button 
+        class="btn btn-outline" 
+        bindtap="prevQuestion"
+        disabled="{{currentIndex === 0}}"
+      >
+        上一题
+      </button>
+      <button class="btn btn-primary" bindtap="nextQuestion">
+        {{currentIndex === totalQuestions - 1 ? '提交' : '下一题'}}
+      </button>
+    </view>
+  </view>
+</view>

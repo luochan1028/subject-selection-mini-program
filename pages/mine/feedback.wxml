@@ -1,0 +1,153 @@
+<!--pages/mine/feedback.wxml-->
+<view class="feedback-page">
+  <!-- 反馈类型选择 -->
+  <view class="feedback-section">
+    <view class="section-title">反馈类型</view>
+    <view class="type-list card">
+      <view
+        class="type-item {{selectedType === item.id ? 'active' : ''}}"
+        wx:for="{{typeList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="selectType"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <text class="type-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈内容输入 -->
+  <view class="feedback-section">
+    <view class="section-title">反馈内容</view>
+    <view class="content-card card">
+      <textarea
+        class="content-textarea"
+        placeholder="请详细描述您的问题或建议，以便我们更好地为您服务..."
+        placeholder-class="textarea-placeholder"
+        value="{{content}}"
+        maxlength="{{maxContentLength}}"
+        bindinput="onContentInput"
+        auto-height
+      />
+      <view class="content-count">
+        <text class="{{contentCount >= maxContentLength ? 'count-limit' : ''}}">{{contentCount}}</text>
+        <text class="count-max">/{{maxContentLength}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="feedback-section">
+    <view class="section-title">联系方式 <text class="section-optional">（选填）</text></view>
+    <view class="contact-card card">
+      <input
+        class="contact-input"
+        placeholder="请输入手机号或微信号，方便我们联系您"
+        placeholder-class="input-placeholder"
+        value="{{contact}}"
+        bindinput="onContactInput"
+      />
+    </view>
+  </view>
+
+  <!-- 上传图片 -->
+  <view class="feedback-section">
+    <view class="section-title">上传图片 <text class="section-optional">（最多{{maxImages}}张）</text></view>
+    <view class="image-card card">
+      <view class="image-list">
+        <view
+          class="image-item"
+          wx:for="{{images}}"
+          wx:key="*this"
+          wx:if="{{item}}"
+        >
+          <image
+            class="image-preview"
+            src="{{item}}"
+            mode="aspectFill"
+            data-index="{{index}}"
+            bindtap="previewImage"
+          />
+          <view
+            class="image-delete"
+            data-index="{{index}}"
+            bindtap="deleteImage"
+          >
+            <text class="delete-icon">×</text>
+          </view>
+        </view>
+        <!-- 空图片占位（模拟） -->
+        <view
+          class="image-item image-placeholder"
+          wx:for="{{images}}"
+          wx:key="index"
+          wx:if="{{!item}}"
+        >
+          <text class="placeholder-icon">🖼️</text>
+          <view
+            class="image-delete"
+            data-index="{{index}}"
+            bindtap="deleteImage"
+          >
+            <text class="delete-icon">×</text>
+          </view>
+        </view>
+        <!-- 添加图片按钮 -->
+        <view
+          class="image-item image-add"
+          wx:if="{{images.length < maxImages}}"
+          bindtap="chooseImage"
+        >
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="btn btn-primary submit-btn" bindtap="submitFeedback">
+      提交反馈
+    </button>
+  </view>
+
+  <!-- 历史反馈记录 -->
+  <view class="feedback-section" wx:if="{{feedbackList.length > 0}}">
+    <view class="section-title">历史反馈</view>
+    <view class="history-list">
+      <view
+        class="history-item card"
+        wx:for="{{feedbackList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewFeedback"
+      >
+        <view class="history-header">
+          <view class="history-type">
+            <text class="type-tag">{{item.typeName}}</text>
+          </view>
+          <view class="history-status status-{{item.status}}">
+            {{item.statusText}}
+          </view>
+        </view>
+        <view class="history-content">{{item.content}}</view>
+        <view class="history-footer">
+          <text class="history-time">
+            🕐 {{item.timeText}}
+          </text>
+          <view class="history-images" wx:if="{{item.images.length > 0}}">
+            <text class="images-count">📷 {{item.images.length}}张</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{feedbackList.length === 0}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无历史反馈记录</text>
+  </view>
+</view>

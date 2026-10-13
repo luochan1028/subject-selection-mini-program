@@ -1,0 +1,60 @@
+<!--pages/knowledge/list.wxml-->
+<view class="knowledge-page">
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-bar">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索文章" 
+        value="{{keyword}}"
+        bindinput="searchArticle"
+      />
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view 
+        class="category-item {{selectedCategory === item ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="*this"
+        data-category="{{item}}"
+        bindtap="selectCategory"
+      >
+        {{item}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 文章列表 -->
+  <view class="article-list">
+    <view 
+      class="article-card card"
+      wx:for="{{filteredArticles}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="viewArticle"
+    >
+      <view class="article-header">
+        <text class="article-category">{{item.category}}</text>
+        <text wx:if="{{item.isVip}}" class="vip-tag">会员</text>
+      </view>
+      <view class="article-title">{{item.title}}</view>
+      <view class="article-summary">{{item.summary}}</view>
+      <view class="article-footer">
+        <view class="article-meta">
+          <text class="meta-item">👁 {{item.viewsText}}</text>
+          <text class="meta-item">📅 {{item.publishTime}}</text>
+        </view>
+        <text class="read-more">阅读全文 ›</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{filteredArticles.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">没有找到相关文章</text>
+    </view>
+  </view>
+</view>

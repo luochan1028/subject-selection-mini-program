@@ -1,0 +1,260 @@
+<!--pages/mine/consult.wxml-->
+<view class="consult-page">
+  <!-- 顶部会员提示 -->
+  <view class="consult-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="header-icon">👨‍🏫</view>
+      <view class="header-info">
+        <view class="header-title">专家一对一咨询</view>
+        <view class="header-sub">资深专家为您解答升学规划难题</view>
+      </view>
+      <view class="consult-count" wx:if="{{isMember}}">
+        <text class="count-num">{{remainConsultCount}}</text>
+        <text class="count-text">次/月</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'expert' ? 'active' : ''}}" data-tab="expert" bindtap="switchTab">
+      <text>专家列表</text>
+    </view>
+    <view class="tab-item {{activeTab === 'record' ? 'active' : ''}}" data-tab="record" bindtap="switchTab">
+      <text>咨询记录</text>
+    </view>
+  </view>
+
+  <!-- 专家列表 -->
+  <view class="expert-list" wx:if="{{activeTab === 'expert'}}">
+    <view 
+      class="expert-card card"
+      wx:for="{{experts}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="viewDetail"
+    >
+      <!-- 专家头像 -->
+      <view class="expert-avatar-wrap">
+        <view class="expert-avatar">{{item.name[0]}}</view>
+        <view class="online-dot {{item.isOnline ? 'online' : 'offline'}}"></view>
+      </view>
+
+      <!-- 专家信息 -->
+      <view class="expert-info">
+        <view class="expert-top">
+          <text class="expert-name">{{item.name}}</text>
+          <view class="vip-tag" wx:if="{{item.isOnline}}">在线</view>
+          <view class="offline-tag" wx:else>离线</view>
+        </view>
+        <view class="expert-title">{{item.title}} · {{item.experience}}经验</view>
+
+        <!-- 擅长领域标签 -->
+        <view class="expert-tags">
+          <text class="tag tag-primary tag-round" wx:for="{{item.specialties}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+
+        <!-- 数据统计 -->
+        <view class="expert-stats">
+          <view class="stat-item">
+            <text class="stat-num">{{item.consultCount}}</text>
+            <text class="stat-label">咨询</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-num text-gold">{{item.rating}}</text>
+            <text class="stat-label">评分</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-num">¥{{item.price}}</text>
+            <text class="stat-label">/次</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 咨询按钮 -->
+      <view class="consult-btn" catchtap="startConsult" data-id="{{item.id}}">
+        <text>立即咨询</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 咨询记录 -->
+  <view class="record-list" wx:if="{{activeTab === 'record'}}">
+    <block wx:if="{{consultRecords.length > 0}}">
+      <view 
+        class="record-card card"
+        wx:for="{{consultRecords}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewRecord"
+      >
+        <view class="record-header">
+          <view class="record-expert">
+            <view class="expert-avatar small">{{item.expertName[0]}}</view>
+            <view class="expert-meta">
+              <text class="expert-name">{{item.expertName}}</text>
+              <text class="expert-title">{{item.expertTitle}}</text>
+            </view>
+          </view>
+          <view class="record-status {{item.status === 'ongoing' ? 'ongoing' : 'completed'}}">
+            {{item.status === 'ongoing' ? '进行中' : '已完成'}}
+          </view>
+        </view>
+        <view class="record-content">{{item.lastMessage}}</view>
+        <view class="record-footer">
+          <text class="record-type {{item.type === 'free' ? 'free' : 'paid'}}">
+            {{item.type === 'free' ? '免费咨询' : '付费 ¥' + item.price}}
+          </text>
+          <text class="record-time">2026年</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <view class="empty-icon-wrapper">
+        <text class="empty-icon">💬</text>
+      </view>
+      <view class="empty-title">暂无咨询记录</view>
+      <view class="empty-text">去专家列表选择一位专家开始咨询吧</view>
+    </view>
+  </view>
+
+  <!-- 专家详情弹窗 -->
+  <view class="detail-modal {{showDetail ? 'show' : ''}}" bindtap="closeDetail" wx:if="{{showDetail}}">
+    <view class="detail-content" catchtap="stopPropagation">
+      <!-- 关闭按钮 -->
+      <view class="detail-close" bindtap="closeDetail">✕</view>
+
+      <!-- 专家头部 -->
+      <view class="detail-header">
+        <view class="detail-avatar-wrap">
+          <view class="detail-avatar">{{currentExpert.name[0]}}</view>
+          <view class="online-dot {{currentExpert.isOnline ? 'online' : 'offline'}} large"></view>
+        </view>
+        <view class="detail-name">{{currentExpert.name}}</view>
+        <view class="detail-title">{{currentExpert.title}} · {{currentExpert.experience}}经验</view>
+
+        <view class="detail-stats">
+          <view class="detail-stat">
+            <text class="stat-value">{{currentExpert.consultCount}}</text>
+            <text class="stat-label">咨询次数</text>
+          </view>
+          <view class="detail-stat">
+            <text class="stat-value text-gold">{{currentExpert.rating}}</text>
+            <text class="stat-label">综合评分</text>
+          </view>
+          <view class="detail-stat">
+            <text class="stat-value">¥{{currentExpert.price}}</text>
+            <text class="stat-label">咨询费用</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 内容区域（可滚动） -->
+      <scroll-view class="detail-body" scroll-y>
+        <!-- 个人简介 -->
+        <view class="detail-section">
+          <view class="section-title">个人简介</view>
+          <view class="section-content bio-text">{{currentExpert.bio}}</view>
+        </view>
+
+        <!-- 擅长方向 -->
+        <view class="detail-section">
+          <view class="section-title">擅长方向</view>
+          <view class="direction-list">
+            <view class="direction-item" wx:for="{{currentExpert.directions}}" wx:key="*this">
+              <text class="direction-icon">✓</text>
+              <text class="direction-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 咨询费用 -->
+        <view class="detail-section">
+          <view class="section-title">咨询费用</view>
+          <view class="price-card">
+            <view class="price-main">
+              <text class="price-symbol">¥</text>
+              <text class="price-value">{{currentExpert.price}}</text>
+              <text class="price-unit">/次</text>
+            </view>
+            <view class="price-desc">
+              <text>会员每月有免费咨询次数</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 用户评价 -->
+        <view class="detail-section">
+          <view class="section-title">用户评价</view>
+          <view class="review-list">
+            <view class="review-item" wx:for="{{currentExpert.reviews}}" wx:key="name" wx:for-item="review">
+              <view class="review-header">
+                <view class="review-user">
+                  <view class="review-avatar">{{review.name[0]}}</view>
+                  <text class="review-name">{{review.name}}</text>
+                </view>
+                <view class="review-stars">
+                  <text class="star" wx:for="{{review.rating}}" wx:key="*this" wx:for-item="s">⭐</text>
+                </view>
+              </view>
+              <view class="review-content">{{review.content}}</view>
+              <view class="review-time">{{review.time}}</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <!-- 底部按钮 -->
+      <view class="detail-footer">
+        <button 
+          class="btn btn-primary btn-block consult-btn-large"
+          bindtap="startConsult"
+          data-id="{{currentExpert.id}}"
+        >
+          {{currentExpert.isOnline ? '立即咨询' : '专家不在线'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- VIP会员遮罩 -->
+  <view class="vip-mask {{showVipMask ? 'show' : ''}}" bindtap="closeVipMask" wx:if="{{!isMember}}">
+    <view class="vip-modal" catchtap="stopPropagation">
+      <view class="vip-close" bindtap="closeVipMask">✕</view>
+
+      <view class="vip-icon-large">👑</view>
+      <view class="vip-title">开通会员 解锁专家咨询</view>
+      <view class="vip-subtitle">资深专家一对一指导，助您规划升学之路</view>
+
+      <view class="vip-benefits">
+        <view class="vip-benefit-item">
+          <text class="benefit-check">✓</text>
+          <text>每月1-2次免费专家咨询</text>
+        </view>
+        <view class="vip-benefit-item">
+          <text class="benefit-check">✓</text>
+          <text>志愿填报/选科规划/政策解读</text>
+        </view>
+        <view class="vip-benefit-item">
+          <text class="benefit-check">✓</text>
+          <text>10年+经验资深专家团队</text>
+        </view>
+        <view class="vip-benefit-item">
+          <text class="benefit-check">✓</text>
+          <text>解锁全部VIP高级功能</text>
+        </view>
+      </view>
+
+      <button class="btn btn-secondary btn-block vip-btn" bindtap="goMember">
+        立即开通会员
+      </button>
+
+      <view class="vip-footer-text">低至 ¥19.9/月 畅享全部特权</view>
+    </view>
+  </view>
+</view>

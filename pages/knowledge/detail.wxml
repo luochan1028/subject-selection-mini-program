@@ -1,0 +1,47 @@
+<!--pages/knowledge/detail.wxml-->
+<view class="detail-page" wx:if="{{article}}">
+  <!-- 文章头部 -->
+  <view class="article-header">
+    <view class="article-tags">
+      <text class="tag tag-primary">{{article.category}}</text>
+      <text wx:if="{{article.isVip}}" class="vip-tag">会员专享</text>
+    </view>
+    <view class="article-title">{{article.title}}</view>
+    <view class="article-meta">
+      <text class="meta-item">✍️ {{article.author}}</text>
+      <text class="meta-item">📅 {{article.publishTime}}</text>
+      <text class="meta-item">👁 {{article.viewsText}}</text>
+    </view>
+  </view>
+
+  <!-- 文章内容 -->
+  <view class="article-content {{article.isVip && !isMember ? 'blur-content' : ''}}">
+    <rich-text nodes="{{article.content}}"></rich-text>
+    
+    <!-- 会员遮罩 -->
+    <view class="vip-mask" wx:if="{{article.isVip && !isMember}}">
+      <view class="mask-content">
+        <text class="mask-icon">🔒</text>
+        <text class="mask-title">开通会员阅读全文</text>
+        <text class="mask-desc">解锁全部会员专享文章，获取更多选科干货</text>
+        <button class="btn btn-secondary btn-small" bindtap="openMember">立即开通</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bar-item" bindtap="toggleFavorite">
+      <text class="bar-icon">{{isFavorite ? '❤️' : '🤍'}}</text>
+      <text class="bar-text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="bar-item">
+      <text class="bar-icon">💬</text>
+      <text class="bar-text">评论</text>
+    </view>
+    <view class="bar-item">
+      <text class="bar-icon">📤</text>
+      <text class="bar-text">分享</text>
+    </view>
+  </view>
+</view>

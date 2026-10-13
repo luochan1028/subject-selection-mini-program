@@ -1,0 +1,280 @@
+<!--pages/query/query.wxml-->
+<view class="query-page">
+  <!-- 顶部Tab -->
+  <view class="top-tabs">
+    <view 
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-tab="{{item.key}}"
+      bindtap="switchTab"
+    >
+      {{item.name}}
+    </view>
+  </view>
+
+  <!-- 选科组合Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'combination'}}">
+    <!-- 模式切换 -->
+    <view class="mode-switcher card">
+      <view 
+        class="mode-item {{subjectMode === item.key ? 'active' : ''}}"
+        wx:for="{{modes}}"
+        wx:key="key"
+        data-mode="{{item.key}}"
+        bindtap="switchMode"
+      >
+        {{item.name}}
+      </view>
+    </view>
+
+    <!-- 科目选择区 -->
+    <view class="subject-selector card">
+      <view class="selector-title">选择科目</view>
+      
+      <!-- 3+1+2模式 -->
+      <block wx:if="{{subjectMode === '3+1+2'}}">
+        <view class="subject-group">
+          <view class="group-label">首选科目（选1门）</view>
+          <view class="subject-list">
+            <view 
+              class="subject-tag {{selectedSubjects.includes(item.key) ? 'selected' : ''}}"
+              wx:for="{{firstSubjects}}"
+              wx:key="key"
+              data-subject="{{item.key}}"
+              data-type="first"
+              bindtap="selectSubject"
+            >
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+        <view class="subject-group">
+          <view class="group-label">再选科目（选2门）</view>
+          <view class="subject-list">
+            <view 
+              class="subject-tag {{selectedSubjects.includes(item.key) ? 'selected' : ''}}"
+              wx:for="{{secondSubjects}}"
+              wx:key="key"
+              data-subject="{{item.key}}"
+              data-type="second"
+              bindtap="selectSubject"
+            >
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 3+3模式 -->
+      <block wx:else>
+        <view class="subject-group">
+          <view class="group-label">选择3门科目</view>
+          <view class="subject-list">
+            <view 
+              class="subject-tag {{selectedSubjects.includes(item.key) ? 'selected' : ''}}"
+              wx:for="{{allSubjects}}"
+              wx:key="key"
+              data-subject="{{item.key}}"
+              data-type="all"
+              bindtap="selectSubject"
+            >
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 组合列表 -->
+    <view class="combination-list">
+      <view class="list-header">
+        <text class="list-title">可选组合（{{filteredCombinations.length}}种）</text>
+      </view>
+      
+      <view 
+        class="combo-card card"
+        wx:for="{{filteredCombinations}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewCombination"
+      >
+        <view class="combo-header">
+          <text class="combo-name">{{item.name}}</text>
+          <text class="combo-coverage">覆盖率 {{item.majorCoverage}}%</text>
+        </view>
+        <view class="combo-tags">
+          <text class="tag tag-primary" wx:for="{{item.subjects}}" wx:key="*this" wx:for-item="subject">{{subject}}</text>
+        </view>
+        <view class="combo-desc">{{item.description}}</view>
+        <view class="combo-footer">
+          <view class="combo-info">
+            <text class="info-label">难度：</text>
+            <text class="info-value">{{item.difficulty}}</text>
+          </view>
+          <view class="combo-info">
+            <text class="info-label">竞争：</text>
+            <text class="info-value">{{item.competition}}</text>
+          </view>
+          <text class="view-detail">详情 ›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 大学查询Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'university'}}">
+    <!-- 搜索栏 -->
+    <view class="search-bar card">
+      <input 
+        class="search-input" 
+        placeholder="搜索大学名称" 
+        value="{{universityKeyword}}"
+        bindinput="searchUniversity"
+      />
+      <view class="filter-btn" bindtap="toggleUniversityFilter">
+        <text>筛选</text>
+      </view>
+    </view>
+
+    <!-- 筛选面板 -->
+    <view class="filter-panel card" wx:if="{{showUniversityFilter}}">
+      <view class="filter-section">
+        <view class="filter-label">所在省份</view>
+        <view class="filter-options">
+          <view 
+            class="filter-option {{universityFilters.province === item ? 'active' : ''}}"
+            wx:for="{{provinces}}"
+            wx:key="*this"
+            data-province="{{item}}"
+            bindtap="selectProvince"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+      <view class="filter-section">
+        <view class="filter-label">院校层次</view>
+        <view class="filter-options">
+          <view 
+            class="filter-option {{universityFilters.level === item ? 'active' : ''}}"
+            wx:for="{{levels}}"
+            wx:key="*this"
+            data-level="{{item}}"
+            bindtap="selectLevel"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
+      <view class="filter-actions">
+        <button class="btn btn-outline btn-small" bindtap="resetUniversityFilter">重置</button>
+      </view>
+    </view>
+
+    <!-- 大学列表 -->
+    <view class="university-list">
+      <view 
+        class="uni-card card"
+        wx:for="{{universityList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewUniversity"
+      >
+        <view class="uni-header">
+          <view class="uni-name">{{item.name}}</view>
+          <view class="uni-levels">
+            <text class="level-tag" wx:for="{{item.level}}" wx:key="*this" wx:for-item="level">{{level}}</text>
+          </view>
+        </view>
+        <view class="uni-info">
+          <text class="uni-province">📍 {{item.province}} · {{item.type}}</text>
+        </view>
+        <view class="uni-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{item.admissionScore}}</text>
+            <text class="stat-label">分数线</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{item.majorCount}}+</text>
+            <text class="stat-label">招生专业</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{item.rank}}</text>
+            <text class="stat-label">排名</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="list-tip" wx:if="{{universityList.length === 0}}">
+        <text>未找到匹配的大学</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 专业查询Tab -->
+  <view class="tab-content" wx:if="{{activeTab === 'major'}}">
+    <!-- 搜索栏 -->
+    <view class="search-bar card">
+      <input 
+        class="search-input" 
+        placeholder="搜索专业名称" 
+        value="{{majorKeyword}}"
+        bindinput="searchMajor"
+      />
+    </view>
+
+    <!-- 分类标签 -->
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view 
+          class="category-item {{selectedCategory === item ? 'active' : ''}}"
+          wx:for="{{majorCategories}}"
+          wx:key="*this"
+          data-category="{{item}}"
+          bindtap="selectCategory"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 专业列表 -->
+    <view class="major-list">
+      <view 
+        class="major-card card"
+        wx:for="{{majorList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewMajor"
+      >
+        <view class="major-header">
+          <text class="major-name">{{item.name}}</text>
+          <text class="major-category">{{item.category}}</text>
+        </view>
+        <view class="major-info">
+          <text class="info-item">学位：{{item.degree}}</text>
+          <text class="info-item">学制：{{item.duration}}年</text>
+        </view>
+        <view class="major-requirements">
+          <text class="req-label">选科要求：</text>
+          <text class="req-subjects" wx:for="{{item.subjectRequirements}}" wx:key="*this" wx:for-item="subject">{{subject}}</text>
+        </view>
+        <view class="major-stats">
+          <view class="stat-item">
+            <text class="stat-value success">{{item.employmentRate}}%</text>
+            <text class="stat-label">就业率</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value warning">¥{{item.avgSalary}}</text>
+            <text class="stat-label">平均薪资</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="list-tip" wx:if="{{majorList.length === 0}}">
+        <text>未找到匹配的专业</text>
+      </view>
+    </view>
+  </view>
+</view>

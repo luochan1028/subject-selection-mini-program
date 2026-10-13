@@ -1,0 +1,133 @@
+<!--pages/mine/about.wxml-->
+<view class="about-page">
+  <!-- Logo 和应用信息区 -->
+  <view class="header-section">
+    <view class="logo-wrapper">
+      <view class="logo-icon">🎯</view>
+    </view>
+    <view class="app-name">{{appName}}</view>
+    <view class="app-version">{{version}}</view>
+    <view class="app-desc">{{description}}</view>
+  </view>
+
+  <!-- 功能亮点 -->
+  <view class="section">
+    <view class="section-title">功能亮点</view>
+    <view class="card features-card">
+      <view class="feature-item" wx:for="{{features}}" wx:key="title">
+        <view class="feature-icon">{{item.icon}}</view>
+        <view class="feature-info">
+          <view class="feature-title">{{item.title}}</view>
+          <view class="feature-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系我们 -->
+  <view class="section">
+    <view class="section-title">联系我们</view>
+    <view class="card contact-card">
+      <view class="contact-item" bindtap="copyToClipboard" data-text="{{contact.wechat}}" data-label="微信号">
+        <view class="contact-icon-wrapper wechat-icon">
+          <text class="contact-icon">💬</text>
+        </view>
+        <view class="contact-info">
+          <view class="contact-label">客服微信</view>
+          <view class="contact-value">{{contact.wechat}}</view>
+        </view>
+        <view class="contact-action">
+          <text class="action-text">复制</text>
+        </view>
+      </view>
+      <view class="contact-item" bindtap="copyToClipboard" data-text="{{contact.email}}" data-label="邮箱">
+        <view class="contact-icon-wrapper email-icon">
+          <text class="contact-icon">📧</text>
+        </view>
+        <view class="contact-info">
+          <view class="contact-label">邮箱地址</view>
+          <view class="contact-value">{{contact.email}}</view>
+        </view>
+        <view class="contact-action">
+          <text class="action-text">复制</text>
+        </view>
+      </view>
+      <view class="contact-item" bindtap="openWebsite">
+        <view class="contact-icon-wrapper website-icon">
+          <text class="contact-icon">🌐</text>
+        </view>
+        <view class="contact-info">
+          <view class="contact-label">官方网站</view>
+          <view class="contact-value">{{contact.website}}</view>
+        </view>
+        <view class="contact-action">
+          <text class="arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他链接 -->
+  <view class="section">
+    <view class="section-title">其他</view>
+    <view class="card link-card">
+      <view class="link-item" bindtap="toggleUpdateLog">
+        <view class="link-left">
+          <text class="link-icon">📝</text>
+          <text class="link-text">版本更新记录</text>
+        </view>
+        <text class="arrow {{showUpdateLog ? 'rotate' : ''}}">›</text>
+      </view>
+      <view class="update-log-container" wx:if="{{showUpdateLog}}">
+        <view class="update-log-item" wx:for="{{updateLogs}}" wx:key="version">
+          <view class="log-header">
+            <text class="log-version">{{item.version}}</text>
+            <text class="log-date">{{item.date}}</text>
+          </view>
+          <view class="log-content">{{item.content}}</view>
+        </view>
+      </view>
+      <view class="link-item" bindtap="checkUpdate">
+        <view class="link-left">
+          <text class="link-icon">🔄</text>
+          <text class="link-text">检查更新</text>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+      <view class="link-item" bindtap="showUserAgreement">
+        <view class="link-left">
+          <text class="link-icon">📄</text>
+          <text class="link-text">用户协议</text>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+      <view class="link-item" bindtap="showPrivacyPolicy">
+        <view class="link-left">
+          <text class="link-icon">🔒</text>
+          <text class="link-text">隐私政策</text>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 好评与分享 -->
+  <view class="section">
+    <view class="card action-card">
+      <view class="action-item" bindtap="rateApp">
+        <text class="action-icon">⭐</text>
+        <text class="action-label">给个好评</text>
+      </view>
+      <view class="action-divider"></view>
+      <button class="action-item share-btn" open-type="share">
+        <text class="action-icon">📤</text>
+        <text class="action-label">分享给朋友</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="footer">
+    <text class="copyright">© 2024 {{appName}} All Rights Reserved</text>
+  </view>
+</view>

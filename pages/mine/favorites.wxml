@@ -1,0 +1,86 @@
+<!--pages/mine/favorites.wxml-->
+<view class="favorites-page">
+  <!-- Tab切换 -->
+  <view class="top-tabs">
+    <view 
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-tab="{{item.key}}"
+      bindtap="switchTab"
+    >
+      {{item.name}}
+    </view>
+  </view>
+
+  <view class="tab-content">
+    <!-- 大学收藏 -->
+    <block wx:if="{{activeTab === 'university'}}">
+      <view class="empty-state" wx:if="{{favorites.universities.length === 0}}">
+        <text class="empty-icon">🏫</text>
+        <text class="empty-text">还没有收藏的大学</text>
+      </view>
+      <view class="favorite-list" wx:else>
+        <view 
+          class="favorite-item card"
+          wx:for="{{favorites.universities}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="viewUniversity"
+        >
+          <view class="item-info">
+            <text class="item-name">{{item.name}}</text>
+            <text class="item-type">{{item.type}}</text>
+          </view>
+          <text class="remove-btn" catchtap="removeFavorite" data-type="university" data-id="{{item.id}}">取消</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 专业收藏 -->
+    <block wx:if="{{activeTab === 'major'}}">
+      <view class="empty-state" wx:if="{{favorites.majors.length === 0}}">
+        <text class="empty-icon">📚</text>
+        <text class="empty-text">还没有收藏的专业</text>
+      </view>
+      <view class="favorite-list" wx:else>
+        <view 
+          class="favorite-item card"
+          wx:for="{{favorites.majors}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="viewMajor"
+        >
+          <view class="item-info">
+            <text class="item-name">{{item.name}}</text>
+            <text class="item-type">{{item.type}}</text>
+          </view>
+          <text class="remove-btn" catchtap="removeFavorite" data-type="major" data-id="{{item.id}}">取消</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 文章收藏 -->
+    <block wx:if="{{activeTab === 'article'}}">
+      <view class="empty-state" wx:if="{{favorites.articles.length === 0}}">
+        <text class="empty-icon">📖</text>
+        <text class="empty-text">还没有收藏的文章</text>
+      </view>
+      <view class="favorite-list" wx:else>
+        <view 
+          class="favorite-item card"
+          wx:for="{{favorites.articles}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="viewArticle"
+        >
+          <view class="item-info">
+            <text class="item-name">{{item.title}}</text>
+            <text class="item-type">{{item.category}}</text>
+          </view>
+          <text class="remove-btn" catchtap="removeFavorite" data-type="article" data-id="{{item.id}}">取消</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

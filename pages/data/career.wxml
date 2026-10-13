@@ -1,0 +1,79 @@
+<!--pages/data/career.wxml-->
+<view class="career-page">
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-bar">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索专业名称" 
+        value="{{keyword}}"
+        bindinput="searchMajor"
+      />
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view 
+        class="category-item {{selectedCategory === item ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="*this"
+        data-category="{{item}}"
+        bindtap="selectCategory"
+      >
+        {{item}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="page-content container {{isMember ? '' : 'blur-content'}}">
+    <!-- 专业列表 -->
+    <view class="major-list">
+      <view 
+        class="major-card card"
+        wx:for="{{majors}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="viewDetail"
+      >
+        <view class="major-header">
+          <text class="major-name">{{item.name}}</text>
+          <text class="major-category">{{item.category}}</text>
+        </view>
+
+        <view class="career-stats">
+          <view class="stat-item">
+            <text class="stat-value success">{{item.employmentRate}}%</text>
+            <text class="stat-label">就业率</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value warning">¥{{item.avgSalary}}</text>
+            <text class="stat-label">平均薪资</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">良好</text>
+            <text class="stat-label">发展前景</text>
+          </view>
+        </view>
+
+        <view class="career-tags">
+          <text class="career-tag">人工智能</text>
+          <text class="career-tag">高薪行业</text>
+          <text class="career-tag">需求大</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员提示 -->
+  <view class="vip-mask" wx:if="{{!isMember}}">
+    <view class="vip-card card" bindtap="openMember">
+      <text class="vip-icon">👑</text>
+      <text class="vip-title">开通会员</text>
+      <text class="vip-desc">查看各专业就业率、薪资、发展趋势等完整职业前景数据</text>
+      <button class="btn btn-secondary btn-small">立即开通</button>
+    </view>
+  </view>
+</view>

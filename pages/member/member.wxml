@@ -1,0 +1,241 @@
+<!--pages/member/member.wxml-->
+<view class="member-page">
+  <!-- 会员头部 -->
+  <view class="member-header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="vip-icon">👑</view>
+      <view class="vip-title">
+        <text class="title-main">{{isMember ? '会员有效期' : '开通会员'}}</text>
+        <text class="title-sub">{{isMember ? '还剩 ' + remainDays + ' 天' : '解锁全部高级功能'}}</text>
+      </view>
+    </view>
+
+    <!-- 特权总览 -->
+    <view class="privilege-overview">
+      <view class="privilege-item">
+        <text class="privilege-icon">📊</text>
+        <text class="privilege-text">AI报告</text>
+      </view>
+      <view class="privilege-item">
+        <text class="privilege-icon">📈</text>
+        <text class="privilege-text">分数线</text>
+      </view>
+      <view class="privilege-item">
+        <text class="privilege-icon">💼</text>
+        <text class="privilege-text">职业分析</text>
+      </view>
+      <view class="privilege-item">
+        <text class="privilege-icon">🎯</text>
+        <text class="privilege-text">志愿规划</text>
+      </view>
+      <view class="privilege-item">
+        <text class="privilege-icon">👨‍🏫</text>
+        <text class="privilege-text">专家咨询</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 套餐选择 -->
+  <view class="plan-section">
+    <view class="section-title">选择套餐</view>
+    <view class="plan-list">
+      <view 
+        class="plan-card {{selectedPlan === item.id ? 'selected' : ''}} {{item.popular ? 'popular' : ''}}"
+        wx:for="{{plans}}"
+        wx:key="id"
+        data-plan="{{item.id}}"
+        bindtap="selectPlan"
+      >
+        <view class="plan-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+        <view class="plan-name">{{item.name}}</view>
+        <view class="plan-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{item.price}}</text>
+        </view>
+        <view class="plan-duration">{{item.duration}}</view>
+        <view class="plan-original">原价 ¥{{item.originalPrice}}</view>
+      </view>
+    </view>
+
+    <!-- 权益列表 -->
+    <view class="plan-features">
+      <view class="feature-item" wx:for="{{plans[1].features}}" wx:key="*this">
+        <text class="feature-check">✓</text>
+        <text class="feature-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 开通按钮 -->
+    <button class="btn btn-secondary btn-block buy-btn" bindtap="purchase" wx:if="{{!isMember}}">
+      立即开通
+    </button>
+    <button class="btn btn-outline btn-block buy-btn" bindtap="purchase" wx:else>
+      续费/升级
+    </button>
+  </view>
+
+  <!-- 权益对比 -->
+  <view class="benefit-section">
+    <view class="section-title">权益对比</view>
+    <view class="benefit-table card">
+      <view class="table-header">
+        <view class="col-name">功能</view>
+        <view class="col-free">免费用户</view>
+        <view class="col-vip">会员用户</view>
+      </view>
+      <view class="table-body">
+        <view class="table-row" wx:for="{{benefits}}" wx:key="name">
+          <view class="col-name">{{item.name}}</view>
+          <view class="col-free">{{item.free}}</view>
+          <view class="col-vip">
+            <text class="vip-check">✓</text>
+            {{item.vip}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户评价 -->
+  <view class="review-section">
+    <view class="section-title">用户评价</view>
+    <view class="review-list">
+      <view class="review-card card" wx:for="{{reviews}}" wx:key="name">
+        <view class="review-header">
+          <view class="review-user">
+            <view class="user-avatar">{{item.name[0]}}</view>
+            <text class="user-name">{{item.name}}</text>
+          </view>
+          <view class="review-rating">
+            <text class="star" wx:for="{{item.rating}}" wx:key="*this" wx:for-item="s">⭐</text>
+          </view>
+        </view>
+        <view class="review-content">{{item.content}}</view>
+        <view class="review-time">{{item.time}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faq-section">
+    <view class="section-title">常见问题</view>
+    <view class="faq-list card">
+      <view 
+        class="faq-item"
+        wx:for="{{faqs}}"
+        wx:key="question"
+        data-index="{{index}}"
+        bindtap="toggleFaq"
+      >
+        <view class="faq-question">
+          <text class="question-text">{{item.question}}</text>
+          <text class="question-arrow {{expandedFaq === index ? 'expanded' : ''}}">›</text>
+        </view>
+        <view class="faq-answer" wx:if="{{expandedFaq === index}}">
+          {{item.answer}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部客服 -->
+  <view class="footer-service">
+    <text class="service-text">有问题？</text>
+    <text class="service-link" bindtap="contactService">联系客服</text>
+  </view>
+
+  <!-- 支付密码弹窗 -->
+  <view class="pay-password-mask" wx:if="{{showPayPassword}}" bindtap="closePayPassword">
+    <view class="pay-password-panel" catchtap="">
+      <view class="pay-header">
+        <text class="pay-close" bindtap="closePayPassword">✕</text>
+        <text class="pay-title">请输入支付密码</text>
+        <text class="pay-forget" bindtap="forgetPassword">忘记密码</text>
+      </view>
+      
+      <view class="pay-amount-section">
+        <text class="pay-merchant">付款给</text>
+        <text class="pay-merchant-name">高中选科助手</text>
+        <view class="pay-amount">
+          <text class="pay-symbol">¥</text>
+          <text class="pay-money">{{payAmount}}</text>
+        </view>
+      </view>
+
+      <view class="pay-plan-info">
+        <text>购买：{{payPlanName}}</text>
+      </view>
+
+      <view class="password-dots">
+        <view class="dot-item {{payPassword.length >= 1 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 1}}"></view>
+        </view>
+        <view class="dot-item {{payPassword.length >= 2 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 2}}"></view>
+        </view>
+        <view class="dot-item {{payPassword.length >= 3 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 3}}"></view>
+        </view>
+        <view class="dot-item {{payPassword.length >= 4 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 4}}"></view>
+        </view>
+        <view class="dot-item {{payPassword.length >= 5 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 5}}"></view>
+        </view>
+        <view class="dot-item {{payPassword.length >= 6 ? 'filled' : ''}}">
+          <view class="dot-inner" wx:if="{{payPassword.length >= 6}}"></view>
+        </view>
+      </view>
+
+      <!-- 数字键盘 -->
+      <view class="pay-keyboard">
+        <view class="keyboard-row">
+          <view class="key-btn" data-num="1" bindtap="inputPassword"><text>1</text></view>
+          <view class="key-btn" data-num="2" bindtap="inputPassword"><text>2</text><text class="key-letter">ABC</text></view>
+          <view class="key-btn" data-num="3" bindtap="inputPassword"><text>3</text><text class="key-letter">DEF</text></view>
+        </view>
+        <view class="keyboard-row">
+          <view class="key-btn" data-num="4" bindtap="inputPassword"><text>4</text><text class="key-letter">GHI</text></view>
+          <view class="key-btn" data-num="5" bindtap="inputPassword"><text>5</text><text class="key-letter">JKL</text></view>
+          <view class="key-btn" data-num="6" bindtap="inputPassword"><text>6</text><text class="key-letter">MNO</text></view>
+        </view>
+        <view class="keyboard-row">
+          <view class="key-btn" data-num="7" bindtap="inputPassword"><text>7</text><text class="key-letter">PQRS</text></view>
+          <view class="key-btn" data-num="8" bindtap="inputPassword"><text>8</text><text class="key-letter">TUV</text></view>
+          <view class="key-btn" data-num="9" bindtap="inputPassword"><text>9</text><text class="key-letter">WXYZ</text></view>
+        </view>
+        <view class="keyboard-row">
+          <view class="key-btn key-empty"></view>
+          <view class="key-btn" data-num="0" bindtap="inputPassword"><text>0</text></view>
+          <view class="key-btn key-delete" data-num="del" bindtap="inputPassword">
+            <text>⌫</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支付成功弹窗 -->
+  <view class="pay-success-mask" wx:if="{{showPaySuccess}}" bindtap="closePaySuccess">
+    <view class="pay-success-panel" catchtap="">
+      <view class="success-icon-wrapper">
+        <view class="success-icon-circle">
+          <text class="success-check">✓</text>
+        </view>
+      </view>
+      <text class="success-title">支付成功</text>
+      <text class="success-amount">¥{{payAmount}}</text>
+      <text class="success-desc">已成功开通{{payPlanName}}</text>
+      <view class="success-info">
+        <view class="success-info-item">
+          <text class="info-label">会员有效期</text>
+          <text class="info-value">{{remainDays}} 天</text>
+        </view>
+      </view>
+      <button class="btn btn-primary btn-block success-btn" bindtap="closePaySuccess">
+        完成
+      </button>
+    </view>
+  </view>
+</view>

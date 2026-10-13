@@ -1,0 +1,64 @@
+<!--pages/data/admission.wxml-->
+<view class="admission-page container">
+  <!-- 搜索栏 -->
+  <view class="search-bar card">
+    <text class="search-icon">🔍</text>
+    <input 
+      class="search-input" 
+      placeholder="搜索大学名称" 
+      value="{{keyword}}"
+      bindinput="searchUniversity"
+    />
+  </view>
+
+  <!-- 会员提示 -->
+  <view class="vip-tip-card card" wx:if="{{!isMember}}" bindtap="openMember">
+    <view class="vip-tip-content">
+      <text class="vip-icon">👑</text>
+      <view class="vip-text">
+        <text class="vip-title">开通会员</text>
+        <text class="vip-desc">查看全国3000+所高校历年录取数据</text>
+      </view>
+    </view>
+    <text class="vip-arrow">›</text>
+  </view>
+
+  <!-- 大学列表 -->
+  <view class="uni-list {{isMember ? '' : 'blur-list'}}">
+    <view 
+      class="uni-card card"
+      wx:for="{{universities}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="viewDetail"
+    >
+      <view class="uni-header">
+        <text class="uni-name">{{item.name}}</text>
+        <view class="uni-levels">
+          <text class="level-tag" wx:for="{{item.level}}" wx:key="*this" wx:for-item="l">{{l}}</text>
+        </view>
+      </view>
+
+      <!-- 分数线趋势 -->
+      <view class="score-trend">
+        <view class="trend-item" wx:for="{{item.historyScores}}" wx:key="year" wx:for-item="score">
+          <text class="trend-year">{{score.year}}</text>
+          <text class="trend-score">{{score.avgScore}}</text>
+        </view>
+      </view>
+
+      <view class="uni-footer">
+        <text class="footer-text">近5年录取数据对比 ›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="list-end" wx:if="{{isMember}}">
+    <text>— 已加载全部数据 —</text>
+  </view>
+
+  <!-- 会员遮罩提示 -->
+  <view class="vip-mask-bottom" wx:if="{{!isMember}}" bindtap="openMember">
+    <button class="btn btn-secondary">开通会员查看全部数据</button>
+  </view>
+</view>

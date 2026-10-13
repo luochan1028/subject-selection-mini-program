@@ -1,0 +1,229 @@
+<!--pages/data/score.wxml-->
+<view class="score-page container">
+  <!-- 添加入口 -->
+  <view class="add-btn card" bindtap="showAddModal">
+    <text class="add-icon">➕</text>
+    <text class="add-text">录入新成绩</text>
+  </view>
+
+  <!-- 无数据状态 -->
+  <view class="empty-state card" wx:if="{{records.length === 0}}">
+    <text class="empty-icon">📝</text>
+    <text class="empty-title">还没有成绩记录</text>
+    <text class="empty-desc">录入各科考试成绩，分析你的优势科目</text>
+  </view>
+
+  <!-- 有数据时的分析 -->
+  <block wx:else>
+    <!-- 最新成绩概览 -->
+    <view class="latest-score card">
+      <view class="card-header">
+        <text class="card-title">📊 最新成绩</text>
+        <text class="exam-name">{{latestRecord.examName}}</text>
+      </view>
+      <view class="score-overview">
+        <view class="total-score">
+          <text class="score-num">{{latestRecord.total}}</text>
+          <text class="score-label">总分</text>
+        </view>
+        <view class="score-details">
+          <view class="detail-item" wx:for="{{latestRecord.subjects}}" wx:key="key">
+            <text class="detail-name">{{item.name}}</text>
+            <text class="detail-score">{{item.score}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成绩趋势 -->
+    <view class="trend-card card">
+      <view class="card-header">
+        <text class="card-title">📈 成绩趋势</text>
+        <text class="trend-count">近{{trendData.length}}次</text>
+      </view>
+      <view class="trend-chart">
+        <view class="trend-bars">
+          <view class="bar-item" wx:for="{{trendData}}" wx:key="name">
+            <view class="bar-wrapper">
+              <view class="bar-fill" style="height: {{item.score / 750 * 100}}%;"></view>
+            </view>
+            <text class="bar-score">{{item.score}}</text>
+            <text class="bar-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 优势科目排名 -->
+    <view class="ranking-card card">
+      <view class="card-header">
+        <text class="card-title">🏆 优势科目排名</text>
+        <text class="view-more" bindtap="viewPercentile">百分位 ›</text>
+      </view>
+      <view class="ranking-list">
+        <view class="rank-item" wx:for="{{subjectRanking}}" wx:key="key">
+          <view class="rank-num {{index < 3 ? 'top' : ''}}">{{index + 1}}</view>
+          <text class="rank-name">{{item.name}}</text>
+          <view class="rank-score-info">
+            <text class="rank-score">{{item.score}}/{{item.fullScore}}</text>
+            <text class="rank-percent">{{item.percent}}%</text>
+          </view>
+          <view class="rank-grade" style="color: {{item.grade.color}}">{{item.grade.label}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 智能建议（会员） -->
+    <view class="advice-card card vip-section {{isMember ? '' : 'blur-mask'}}" bindtap="viewAdvice">
+      <view class="card-header">
+        <text class="card-title">💡 智能学习建议</text>
+        <text class="vip-tag">会员</text>
+      </view>
+      <view class="advice-content">
+        <view class="advice-item">
+          <text class="advice-icon">✅</text>
+          <text class="advice-text">你的物理和数学优势明显，建议保持优势，争取更高分数</text>
+        </view>
+        <view class="advice-item">
+          <text class="advice-icon">⚠️</text>
+          <text class="advice-text">英语和语文有提升空间，建议加强阅读和写作训练</text>
+        </view>
+        <view class="advice-item">
+          <text class="advice-icon">📈</text>
+          <text class="advice-text">近三次考试总分稳步提升，继续保持学习节奏</text>
+        </view>
+      </view>
+      <view class="blur-content" wx:if="{{!isMember}}">
+        <text class="blur-title">开通会员查看智能建议</text>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <view class="history-section">
+      <view class="section-title">历史记录</view>
+      <view class="history-list">
+        <view class="history-item card" wx:for="{{records}}" wx:key="id">
+          <view class="history-info">
+            <text class="history-name">{{item.examName}}</text>
+            <text class="history-date">{{item.examDate}}</text>
+          </view>
+          <view class="history-score">
+            <text class="score-num">{{item.total}}</text>
+            <text class="score-label">分</text>
+          </view>
+          <view class="history-action" catchtap="deleteRecord" data-id="{{item.id}}">
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 添加成绩弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}" bindtap="hideAddModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">录入成绩</text>
+        <text class="modal-close" bindtap="hideAddModal">✕</text>
+      </view>
+      
+      <scroll-view class="modal-body" scroll-y>
+        <view class="form-item">
+          <text class="form-label">考试名称</text>
+          <input 
+            class="form-input" 
+            placeholder="如：期中考试、月考等"
+            value="{{newRecord.examName}}"
+            bindinput="inputExamName"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">考试日期</text>
+          <picker mode="date" value="{{newRecord.examDate}}" bindchange="selectDate">
+            <view class="form-picker">{{newRecord.examDate || '请选择日期'}}</view>
+          </picker>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">各科成绩</text>
+          <view class="score-inputs">
+            <view class="score-input-item" wx:for="{{newRecord.subjects}}" wx:key="key" wx:for-index="index">
+              <text class="subject-name">{{item.name}}</text>
+              <input 
+                class="subject-input" 
+                type="digit"
+                placeholder="{{item.fullScore}}"
+                value="{{item.score}}"
+                data-index="{{index}}"
+                bindinput="inputScore"
+              />
+              <text class="full-score">/{{item.fullScore}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="modal-footer">
+        <button class="btn btn-primary btn-block" bindtap="saveRecord">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 百分位对比弹窗 -->
+  <view class="modal-mask" wx:if="{{showPercentileModal}}" bindtap="closePercentileModal">
+    <view class="modal-content modal-large" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">📊 百分位对比分析</text>
+        <text class="modal-close" bindtap="closePercentileModal">✕</text>
+      </view>
+      <view class="modal-body">
+        <view class="percentile-desc">
+          <text>基于全省同年级学生数据模拟，展示你在整体中的排名位置</text>
+        </view>
+        <view class="percentile-list">
+          <view class="percentile-item" wx:for="{{percentileData}}" wx:key="name">
+            <view class="percentile-left">
+              <text class="percentile-name">{{item.name}}</text>
+              <text class="percentile-score">{{item.score}}/{{item.fullScore}}</text>
+            </view>
+            <view class="percentile-bar-wrapper">
+              <view class="percentile-bar-bg">
+                <view class="percentile-bar-fill" style="width: {{item.percentile}}%; background: linear-gradient(90deg, #667EEA, #764BA2);"></view>
+              </view>
+              <text class="percentile-val">第 {{item.percentile}}%</text>
+            </view>
+            <text class="percentile-level" style="color: {{item.levelColor}}; background: {{item.levelColor}}15;">{{item.level}}</text>
+          </view>
+        </view>
+        <view class="percentile-tip">
+          <text class="tip-icon">💡</text>
+          <text class="tip-text">百分位越低，表示排名越靠前。例如第10%意味着你超过了90%的学生。</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 智能建议弹窗 -->
+  <view class="modal-mask" wx:if="{{showAdviceModal}}" bindtap="closeAdviceModal">
+    <view class="modal-content modal-large" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">💡 智能学习建议</text>
+        <text class="modal-close" bindtap="closeAdviceModal">✕</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <view class="advice-modal-list">
+          <view class="advice-modal-item" wx:for="{{adviceList}}" wx:key="type">
+            <view class="advice-modal-icon" style="background: {{item.color}}15;">
+              <text>{{item.icon}}</text>
+            </view>
+            <view class="advice-modal-content">
+              <text class="advice-modal-type" style="color: {{item.color}};">{{item.type}}</text>
+              <text class="advice-modal-text">{{item.text}}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

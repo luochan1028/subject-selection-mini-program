@@ -1,0 +1,75 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/assessment/assessment",
+    "pages/query/query",
+    "pages/data/data",
+    "pages/mine/mine",
+    "pages/assessment/result",
+    "pages/query/combination",
+    "pages/query/university",
+    "pages/query/major",
+    "pages/query/detail",
+    "pages/data/score",
+    "pages/data/admission",
+    "pages/data/career",
+    "pages/knowledge/list",
+    "pages/knowledge/detail",
+    "pages/member/member",
+    "pages/mine/reports",
+    "pages/mine/favorites",
+    "pages/mine/history",
+    "pages/mine/settings",
+    "pages/mine/consult",
+    "pages/mine/about",
+    "pages/mine/feedback"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#667EEA",
+    "navigationBarTitleText": "高中选科助手",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F8FAFF"
+  },
+  "tabBar": {
+    "color": "#8B9AB8",
+    "selectedColor": "#667EEA",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/assessment/assessment",
+        "text": "测评",
+        "iconPath": "images/tab-assess.png",
+        "selectedIconPath": "images/tab-assess-active.png"
+      },
+      {
+        "pagePath": "pages/query/query",
+        "text": "查询",
+        "iconPath": "images/tab-query.png",
+        "selectedIconPath": "images/tab-query-active.png"
+      },
+      {
+        "pagePath": "pages/data/data",
+        "text": "数据",
+        "iconPath": "images/tab-data.png",
+        "selectedIconPath": "images/tab-data-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/tab-mine.png",
+        "selectedIconPath": "images/tab-mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

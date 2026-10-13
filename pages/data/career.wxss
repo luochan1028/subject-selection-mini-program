@@ -1,0 +1,406 @@
+/* pages/data/career.wxss */
+
+.career-page {
+  min-height: 100vh;
+  position: relative;
+  background-color: #F8FAFF;
+}
+
+/* 搜索 */
+.search-section {
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.06);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  height: 80rpx;
+  padding: 0 28rpx;
+  background: linear-gradient(135deg, #F8FAFF 0%, #F0F2FA 100%);
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  background: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.15);
+}
+
+.search-icon {
+  font-size: 30rpx;
+  margin-right: 14rpx;
+  color: #8B9AB8;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1A2240;
+}
+
+/* 分类 */
+.category-scroll {
+  white-space: nowrap;
+  padding: 20rpx 24rpx;
+  background-color: #FFFFFF;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.06);
+}
+
+.category-list {
+  display: inline-flex;
+  gap: 16rpx;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 14rpx 32rpx;
+  background: linear-gradient(135deg, #F8FAFF 0%, #F0F2FA 100%);
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  color: #5A6A8A;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.category-item.active {
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  color: #FFFFFF;
+  box-shadow: 0 6rpx 16rpx rgba(102, 126, 234, 0.35);
+}
+
+/* 内容 */
+.page-content {
+  padding: 24rpx;
+}
+
+.page-content.blur-content {
+  filter: blur(12rpx);
+  -webkit-filter: blur(12rpx);
+  pointer-events: none;
+}
+
+.major-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.major-card {
+  margin-bottom: 0;
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.major-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6rpx;
+  height: 100%;
+  background: linear-gradient(180deg, #667EEA 0%, #764BA2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.major-card:active::before {
+  opacity: 1;
+}
+
+.major-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.major-name {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1A2240;
+}
+
+.major-category {
+  font-size: 24rpx;
+  color: #667EEA;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 8rpx 20rpx;
+  border-radius: 16rpx;
+  font-weight: 600;
+}
+
+/* 薪资进度条 */
+.salary-section {
+  margin-bottom: 20rpx;
+}
+
+.salary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.salary-label {
+  font-size: 26rpx;
+  color: #5A6A8A;
+  font-weight: 500;
+}
+
+.salary-range {
+  font-size: 28rpx;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.salary-bar-wrapper {
+  height: 16rpx;
+  background: linear-gradient(90deg, #F0F2FA 0%, #E8EBF5 100%);
+  border-radius: 8rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.salary-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667EEA 0%, #764BA2 100%);
+  border-radius: 8rpx;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.salary-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20rpx;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 8rpx;
+}
+
+/* 职业统计 */
+.career-stats {
+  display: flex;
+  padding: 24rpx 0;
+  border-top: 2rpx solid #F0F2FA;
+  border-bottom: 2rpx solid #F0F2FA;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rpx;
+  height: 48rpx;
+  background-color: #F0F2FA;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1A2240;
+  margin-bottom: 6rpx;
+}
+
+.stat-value.success {
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-value.warning {
+  background: linear-gradient(135deg, #FF8A65 0%, #FFB74D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #8B9AB8;
+}
+
+/* 前景评级 */
+.prospect-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.06) 0%, rgba(118, 75, 162, 0.06) 100%);
+  border-radius: 16rpx;
+}
+
+.prospect-label {
+  font-size: 26rpx;
+  color: #5A6A8A;
+  margin-right: 16rpx;
+  font-weight: 500;
+}
+
+.prospect-stars {
+  display: flex;
+  gap: 6rpx;
+}
+
+.prospect-star {
+  font-size: 28rpx;
+  color: #FFD700;
+}
+
+.prospect-star.inactive {
+  color: #E0E0E0;
+}
+
+.prospect-text {
+  margin-left: auto;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #667EEA;
+}
+
+/* 职业标签 */
+.career-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.career-tag {
+  padding: 10rpx 20rpx;
+  background: linear-gradient(135deg, rgba(255, 138, 101, 0.1) 0%, rgba(255, 183, 77, 0.1) 100%);
+  color: #FF8A65;
+  font-size: 22rpx;
+  border-radius: 12rpx;
+  font-weight: 500;
+}
+
+/* 职业详情 */
+.career-detail {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #F0F2FA;
+}
+
+.detail-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A2240;
+  margin-bottom: 12rpx;
+}
+
+.detail-desc {
+  font-size: 26rpx;
+  color: #5A6A8A;
+  line-height: 1.6;
+}
+
+/* 相关专业推荐 */
+.related-majors {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #F0F2FA;
+}
+
+.related-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A2240;
+  margin-bottom: 16rpx;
+}
+
+.related-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.related-item {
+  padding: 10rpx 24rpx;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+  color: #667EEA;
+  font-size: 24rpx;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+/* 会员遮罩 */
+.vip-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(26, 34, 64, 0.6);
+  z-index: 100;
+}
+
+.vip-card {
+  width: 600rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 32rpx;
+  background-color: #FFFFFF;
+  border-radius: 28rpx;
+  box-shadow: 0 16rpx 48rpx rgba(102, 126, 234, 0.2);
+}
+
+.vip-icon {
+  font-size: 96rpx;
+  margin-bottom: 24rpx;
+}
+
+.vip-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A2240;
+  margin-bottom: 16rpx;
+}
+
+.vip-desc {
+  font-size: 26rpx;
+  color: #5A6A8A;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 36rpx;
+}
+
+.vip-btn {
+  width: 100%;
+  height: 96rpx;
+  line-height: 96rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #FFD700 0%, #FF8A65 100%);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255, 138, 101, 0.35);
+}

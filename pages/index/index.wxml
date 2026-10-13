@@ -1,0 +1,108 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 顶部欢迎栏 -->
+  <view class="welcome-bar">
+    <view class="user-info">
+      <block wx:if="{{userInfo}}">
+        <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view class="user-detail">
+          <view class="greeting">
+            <text>你好，{{userInfo.nickName}}</text>
+            <view wx:if="{{isMember}}" class="member-badge">VIP会员</view>
+          </view>
+          <text class="subtitle">今天也要加油哦 💪</text>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="avatar-placeholder" bindtap="handleLogin">
+          <text class="avatar-icon">👤</text>
+        </view>
+        <view class="user-detail">
+          <view class="greeting" bindtap="handleLogin">
+            <text>点击登录</text>
+          </view>
+          <text class="subtitle">登录后解锁更多功能</text>
+        </view>
+      </block>
+    </view>
+    <view wx:if="{{isMember}}" class="member-days">
+      <text class="days-num">{{memberInfo.remainDays || 30}}</text>
+      <text class="days-text">天</text>
+    </view>
+  </view>
+
+  <!-- 测评引导卡片 -->
+  <view class="card assessment-card" wx:if="{{!hasAssessment}}">
+    <view class="card-header">
+      <text class="card-title">🧠 智能选科测评</text>
+      <text class="card-tag">免费</text>
+    </view>
+    <view class="card-body">
+      <text class="card-desc">
+        30道题，8分钟完成，从性格、兴趣、能力三维度分析，为你推荐最适合的选科组合
+      </text>
+      <button class="btn btn-primary btn-block mt-16" bindtap="startAssessment">
+        立即开始测评
+      </button>
+    </view>
+  </view>
+
+  <!-- 已有测评结果卡片 -->
+  <view class="card assessment-result-card" wx:else bindtap="viewAssessmentResult">
+    <view class="card-header">
+      <text class="card-title">📊 我的测评结果</text>
+      <text class="view-more">查看详情 ›</text>
+    </view>
+    <view class="card-body">
+      <view class="result-summary">
+        <view class="result-main">
+          <text class="result-combo">{{latestAssessment.topCombinations[0].name}}</text>
+          <text class="result-score">匹配度 {{latestAssessment.topCombinations[0].matchScore}}%</text>
+        </view>
+        <view class="result-tags">
+          <text class="tag tag-primary" wx:for="{{latestAssessment.topCombinations[0].subjects}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员推广卡片 -->
+  <view class="card member-card" bindtap="openMember" wx:if="{{!isMember}}">
+    <view class="member-card-content">
+      <view class="member-left">
+        <text class="member-title">👑 开通会员</text>
+        <text class="member-desc">解锁AI深度报告、历年分数线等10大专属特权</text>
+      </view>
+      <view class="member-right">
+        <text class="member-price">¥19.9</text>
+        <text class="member-unit">/月起</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速功能入口 -->
+  <view class="card quick-func-card">
+    <view class="card-header">
+      <text class="card-title">⚡ 快速功能</text>
+    </view>
+    <view class="func-grid">
+      <view 
+        class="func-item" 
+        wx:for="{{quickFunctions}}" 
+        wx:key="name"
+        data-url="{{item.url}}"
+        bindtap="goToFunction"
+      >
+        <view class="func-icon" style="background-color: {{item.color}}20; color: {{item.color}}">
+          <text>{{item.icon}}</text>
+        </view>
+        <text class="func-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+
+
+  <!-- 底部留白 -->
+  <view style="height: 40rpx;"></view>
+</view>
